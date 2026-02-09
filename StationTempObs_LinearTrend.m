@@ -1,4 +1,4 @@
-function [P_all, P_recent] = StationTempObs_LinearTrend(station_number, RecentYear)
+function [P_all, P_recent] = StationTempObs_LinearTrend(station_number)
 
 % StationTempObs_function  Analyze historical temperature observations
 %===================================================================

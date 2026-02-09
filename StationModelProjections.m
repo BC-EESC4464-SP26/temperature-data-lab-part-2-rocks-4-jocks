@@ -36,8 +36,9 @@ filename = ['model' num2str(station_number) '.csv'];
 
 data = readtable(filename);
 
-years = data{:, 3};
-temp = mean(data{:, 4:end}, "omitnan");
+years = data{:,1};
+monthlyTemps = data{:,2:end};
+temp = mean(monthlyTemps, 2, 'omitnan');
 
 
 
@@ -52,10 +53,11 @@ temp = mean(data{:, 4:end}, "omitnan");
  %<-- (this will take multiple lines of code - see the procedure you
  %followed in Part 1 for a reminder of how you can do this)
 
- baselineYearsIndices = years >= 2006;
+baselineYearsIndices = years >= 2006 & years <= 2025;
 
- baselineTemperatures = temp(baselineYearsIndices);
- baseline_model = [mean(baselineTemperatures), std(baselineTemperatures)];
+baselineTemperatures = temp(baselineYearsIndices);
+
+baseline_model = [mean(baselineTemperatures), std(baselineTemperatures)];
 
 %% Calculate the 5-year moving mean smoothed annual mean temperature anomaly over the modeled period
 % Note that you could choose to provide these as an output if you want to
