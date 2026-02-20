@@ -97,6 +97,24 @@ title('Rate of Temperature Change at Each Station');
 %function cmocean, which is a good diverging colormap option
 %<--
 
+localSlope = P_all(:,1);
+globalIndices = years >= RecentYear;
+[globalSlope, globalMeanTemp] = linear_temp(years(globalIndices), meanTemps(globalIndices));
+slopeDiff = localSlope - globalSlope;
+
+figure(6); clf
+worldmap('World')
+load coastlines
+plotm(coastlat,coastlon)
+
+scatterm(lat, lon, 50, slopeDiff, 'filled');
+colorbar
+title('Difference Between Local and Global Warming Rate')
+
+maxAbs = max(abs(slopeDiff));
+clim([-maxAbs maxAbs])
+
+
 %% 4. Now calculate the projected future rate of temperature change at each of these 18 stations
 % using annual mean temperature data from GFDL model output following the
 % A2 scenario (here you will call the function StationModelProjections,
@@ -134,10 +152,34 @@ end
 %% 5. Plot a global map of the rate of temperature change projected at each station over the 21st century
 %<--
 
+figure(3); clf
+worldmap('World')
+load coastlines
+plotm(coastlat,coastlon)
+
+modelSlopeDecade = modelArray(:,1) * 10;
+
+scatterm(lat, lon, 50, modelSlopeDecade, 'filled');
+colorbar
+title('Projected 21st Century Temperature Change (°C per decade)')
+
+
 %% 6a. Plot a global map of the interannual variability in annual mean temperature at each station
 %as determined by the baseline standard deviation of the temperatures from
 %2005 to 2025
 %<--
+
+figure(4); clf
+worldmap('World')
+load coastlines
+plotm(coastlat,coastlon)
+
+baselineStd = baselineArray(:,2);
+
+scatterm(lat, lon, 50, baselineStd, 'filled');
+colorbar
+title('Interannual Variability (Baseline Std Dev, 2006–2025)')
+
 
 %% 6b-c. Calculate the time of emergence of the long-term change in temperature from local variability
 %There are many ways to make this calcuation, but here we will compare the
@@ -151,5 +193,18 @@ end
 %temperatures from the baseline period
 %<--
 
+emergenceYear = 2006 + (2 * baselineStd ./ modelArray(: , 1));
+
 %Plot a global map showing the year of emergence
 %<--
+
+figure(5); clf
+worldmap('World')
+load coastlines
+plotm(coastlat, coastlon)
+
+scatterm(lat, lon, 50, emergenceYear, 'filled');
+colorbar
+title('Year of Emergence of Long-term Temperature Change')
+
+clim([2006 2100])
